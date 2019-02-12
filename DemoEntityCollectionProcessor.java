@@ -47,7 +47,19 @@ import org.apache.olingo.server.api.ODataApplicationException;
 import org.apache.olingo.server.api.ODataRequest;
 import org.apache.olingo.server.api.ODataResponse;
 import org.apache.olingo.server.api.ServiceMetadata;
-
+import org.apache.olingo.server.api.processor.EntityCollectionProcessor;
+import org.apache.olingo.server.api.serializer.EntityCollectionSerializerOptions;
+import org.apache.olingo.server.api.serializer.ODataSerializer;
+import org.apache.olingo.server.api.serializer.SerializerException;
+import org.apache.olingo.server.api.serializer.SerializerResult;
+import org.apache.olingo.server.api.uri.UriInfo;
+import org.apache.olingo.server.api.uri.UriInfoResource;
+import org.apache.olingo.server.api.uri.UriResource;
+import org.apache.olingo.server.api.uri.UriResourceEntitySet;
+import org.apache.olingo.server.api.uri.UriResourceNavigation;
+import org.apache.olingo.server.api.uri.UriResourcePrimitiveProperty;
+import org.apache.olingo.server.api.uri.queryoption.CountOption;
+import org.apache.olingo.server.api.uri.queryoption.ExpandItem;
 import org.apache.olingo.server.api.uri.queryoption.ExpandOption;
 import org.apache.olingo.server.api.uri.queryoption.FilterOption;
 import org.apache.olingo.server.api.uri.queryoption.OrderByItem;
@@ -95,8 +107,12 @@ public class DemoEntityCollectionProcessor implements EntityCollectionProcessor 
     modifiedEntityList = applyFilterQueryOption(modifiedEntityList, uriInfo.getFilterOption());
     // 3.2.) $orderby
     modifiedEntityList = applyOrderQueryOption(modifiedEntityList, uriInfo.getOrderByOption());
-
-	
+    // 3.3.) $count
+    modifiedEntityList = applyCountQueryOption(modifiedEntityCollection, modifiedEntityList, uriInfo.getCountOption());
+    // 3.4.) $skip
+    modifiedEntityList = applySkipQueryOption(modifiedEntityList, uriInfo.getSkipOption());
+    // 3.5.) $top
+    modifiedEntityList = applyTopQueryOption(modifiedEntityList, uriInfo.getTopOption());
     // 3.6.) Server driven paging (not part of this tutorial)
     // 3.7.) $expand
     modifiedEntityList = applyExpandQueryOption(modifiedEntityList, edmEntitySet, uriInfo.getExpandOption());
