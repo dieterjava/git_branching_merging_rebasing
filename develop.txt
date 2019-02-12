@@ -1,14 +1,10 @@
-feature_1:  on branch feature 1
-feature_1: more done here
+develop_1:  on branch feature 1
+develop_1: more done here
 
 develop:  on branch develop
 develop:  on branch develop
 develop:  on branch develop
 
-develop: some more changed
-
-develop:  on branch develop
-develop:  on branch develop
-develop:  on branch develop
+develop_1develop_1develop_1develop_1
 
 develop:  3 changed
