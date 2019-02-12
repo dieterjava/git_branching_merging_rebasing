@@ -38,32 +38,7 @@ import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.edm.EdmNavigationProperty;
 import org.apache.olingo.commons.api.edm.EdmNavigationPropertyBinding;
-import org.apache.olingo.commons.api.edm.EdmProperty;
-import org.apache.olingo.commons.api.format.ContentType;
-import org.apache.olingo.commons.api.http.HttpHeader;
-import org.apache.olingo.commons.api.http.HttpStatusCode;
-import org.apache.olingo.server.api.OData;
-import org.apache.olingo.server.api.ODataApplicationException;
-import org.apache.olingo.server.api.ODataRequest;
-import org.apache.olingo.server.api.ODataResponse;
-import org.apache.olingo.server.api.ServiceMetadata;
-import org.apache.olingo.server.api.processor.EntityCollectionProcessor;
-import org.apache.olingo.server.api.serializer.EntityCollectionSerializerOptions;
-import org.apache.olingo.server.api.serializer.ODataSerializer;
-import org.apache.olingo.server.api.serializer.SerializerException;
-import org.apache.olingo.server.api.serializer.SerializerResult;
-import org.apache.olingo.server.api.uri.UriInfo;
-import org.apache.olingo.server.api.uri.UriInfoResource;
-import org.apache.olingo.server.api.uri.UriResource;
-import org.apache.olingo.server.api.uri.UriResourceEntitySet;
-import org.apache.olingo.server.api.uri.UriResourceNavigation;
-import org.apache.olingo.server.api.uri.UriResourcePrimitiveProperty;
-import org.apache.olingo.server.api.uri.queryoption.CountOption;
-import org.apache.olingo.server.api.uri.queryoption.ExpandItem;
-import org.apache.olingo.server.api.uri.queryoption.ExpandOption;
-import org.apache.olingo.server.api.uri.queryoption.FilterOption;
-import org.apache.olingo.server.api.uri.queryoption.OrderByItem;
-import org.apache.olingo.server.api.uri.queryoption.OrderByOption;
+
 import org.apache.olingo.server.api.uri.queryoption.SelectOption;
 import org.apache.olingo.server.api.uri.queryoption.SkipOption;
 import org.apache.olingo.server.api.uri.queryoption.TopOption;
@@ -111,20 +86,7 @@ public class DemoEntityCollectionProcessor implements EntityCollectionProcessor 
     modifiedEntityList = applyCountQueryOption(modifiedEntityCollection, modifiedEntityList, uriInfo.getCountOption());
     // 3.4.) $skip
     modifiedEntityList = applySkipQueryOption(modifiedEntityList, uriInfo.getSkipOption());
-    // 3.5.) $top
-    modifiedEntityList = applyTopQueryOption(modifiedEntityList, uriInfo.getTopOption());
-    // 3.6.) Server driven paging (not part of this tutorial)
-    // 3.7.) $expand
-    modifiedEntityList = applyExpandQueryOption(modifiedEntityList, edmEntitySet, uriInfo.getExpandOption());
-    // 3.8.) $select
-    SelectOption selectOption = uriInfo.getSelectOption();
-    
-    // Set the (may) modified entityList to the new entity collection
-    modifiedEntityCollection.getEntities().addAll(modifiedEntityList);
-    
-    // 4th: create a serializer based on the requested format (json)
-    ODataSerializer serializer = odata.createSerializer(responseFormat);
-		
+
 		// we need the property names of the $select, in order to build the context URL
 		EdmEntityType edmEntityType = edmEntitySet.getEntityType();
     String selectList = odata.createUriHelper()
@@ -148,15 +110,7 @@ public class DemoEntityCollectionProcessor implements EntityCollectionProcessor 
 
     // 5th: configure the response object: set the body, headers and status code
     response.setContent(serializedContent);
-    response.setStatusCode(HttpStatusCode.OK.getStatusCode());
-    response.setHeader(HttpHeader.CONTENT_TYPE, responseFormat.toContentTypeString());
-  }
 
-  private List<Entity> applyExpandQueryOption(List<Entity> modifiedEntityList,
-      EdmEntitySet edmEntitySet, ExpandOption expandOption) {
-
-    // in our example: http://localhost:8080/DemoService/DemoService.svc/Categories/$expand=Products
-    // or http://localhost:8080/DemoService/DemoService.svc/Products?$expand=Category
     if (expandOption != null) {
       // retrieve the EdmNavigationProperty from the expand expression
       // Note: in our example, we have only one NavigationProperty, so we can directly access it
